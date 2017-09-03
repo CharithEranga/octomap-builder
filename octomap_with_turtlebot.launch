@@ -1,0 +1,30 @@
+<!-- 
+  Example launch file for octomap_server mapping: 
+  Listens to incoming PointCloud2 data and incrementally builds an octomap. 
+  The data is sent out in different representations. 
+
+  Copy this file into your workspace and adjust as needed, see
+  www.ros.org/wiki/octomap_server for details  
+-->
+<launch>
+	<node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
+		<param name="resolution" value="0.1" />
+		
+		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
+		<param name="frame_id" type="string" value="odom" />;
+		
+		<!-- maximum range to integrate (speedup!) -->
+		<param name="sensor_model/max_range" value="50.0" />
+		
+		<!-- data source to integrate (PointCloud2) -->
+		<remap from="cloud_in" to="/camera/depth/points" />
+	
+	</node>
+	
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find rviz_launchers)/rviz/robot.rviz" />
+
+	<include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch"></include>
+
+	<include file="$(find turtlebot_teleop)/launch/keyboard_teleop.launch"></include>
+
+</launch>
